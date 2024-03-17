@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     plt.scatter(digital_to_voltage(x_values_data), y_values_deviation, label="Data")
     plt.xlabel('Voltage (V)')
-    plt.ylabel('Distance From Actual Length ({unit})'.format(unit=config["unit"]))
+    plt.ylabel('Distance From Trend ({unit})'.format(unit=config["unit"]))
     plt.title('Deviation Plot')
     plt.legend()
     plt.show()
