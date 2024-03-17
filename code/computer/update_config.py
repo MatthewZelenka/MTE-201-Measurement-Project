@@ -1,5 +1,7 @@
 import json, argparse
 
+import numpy as np
+
 from data_in import stats_serial
 
 if __name__ == "__main__":
@@ -21,11 +23,19 @@ if __name__ == "__main__":
             config = json.load(json_file)
         
         data_values = []
-        for _ in range(args.sample_size):
-            data_values.append(val if ((val := ser.out()) != None) else float('inf'))
-        
+        while ((len(data_values) != args.sample_size) 
+                or (np.std(data_values) > 2)
+                or (abs(max(data_values)-min(data_values)) > 20)):
+            if (len(data_values) == args.sample_size):
+                data_values.pop(0)
+            data_values.append(ser.out())
+        # for _ in range(args.sample_size):
+            # data_values.append(val if ((val := ser.out()) != None) else float('inf'))
+
         serial_out = sum(data_values)/len(data_values)
         print(data_values)
+        print("Delta: {delta}".format(delta = abs(max(data_values)-min(data_values))))
+        print("STD: {std}".format(std = np.std(data_values)))
         measurementValue = float(input("Map {value} to {unit}: ".format(value = serial_out, unit=config["unit"])))
     
         if config["data"] == None:

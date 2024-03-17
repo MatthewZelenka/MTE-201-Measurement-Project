@@ -10,6 +10,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Adds point to config data')
     parser.add_argument('config_file', type=str, help='Config JSON file path')
+    parser.add_argument('--no-curve', dest='curve', action='store_false', help='To generate curve on graph (Defualt: True)')
     args = parser.parse_args()
     
     config:dict
@@ -21,7 +22,7 @@ if __name__ == "__main__":
     x_values_data, y_values_data = zip(*config["data"])
     x_values_data = np.array(x_values_data)
 
-    if (config["interpolation"] != None):
+    if (config["interpolation"] != None and args.curve == True):
         # Generate x values for the plot
         x_values = np.linspace(np.min(x_values_data), np.max(x_values_data), 100)
 
@@ -38,7 +39,7 @@ if __name__ == "__main__":
 
     plt.scatter(digital_to_voltage(x_values_data), y_values_data, label="Data")
     plt.xlabel('Voltage (V)')
-    plt.ylabel('Distance in {unit}'.format(unit=config["unit"]))
-    plt.title('Scatterplot Title')
+    plt.ylabel('Distance ({unit})'.format(unit=config["unit"]))
+    plt.title('Calibration {graph_type}'.format(graph_type = "Curve" if args.curve else "Scatter Plot"))
     plt.legend()
     plt.show()

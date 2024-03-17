@@ -12,6 +12,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     config:dict
+
+    SAMPLE_SIZE = 2000
+    sample_array = []
     
     with open(args.config_file, 'r') as json_file:
         # Load the content as a dictionary
@@ -32,8 +35,12 @@ if __name__ == "__main__":
 
     while True:
         serial_value = ser.out()
-        if (serial_value == None or serial_value > x_values_data_max or serial_value < x_values_data_min):
-            print("Error")
+        sample_array.append(serial_value)
+        if (
+                (serial_value == None or serial_value > x_values_data_max or serial_value < x_values_data_min) 
+                and ((len(sample_array) != SAMPLE_SIZE) 
+                or (np.std(sample_array) > 2)
+                or (abs(max(sample_array)-min(sample_array)) > 20))):
             continue
         current_value = np.polyval(config["interpolation"]["coefficients"], serial_value)
         print("Value from {max_value} {unit} to {min_value} {unit}".format(max_value=current_value+max_uncertainty_pos, min_value=current_value+max_uncertainty_neg, unit=config["unit"]))
