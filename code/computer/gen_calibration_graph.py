@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def digital_to_voltage(array:np.ndarray):
-    return (array/4095)*3.3
+    return (array/4096)*3.3
 
 if __name__ == "__main__":
 
